@@ -3,6 +3,7 @@ import './App.css';
 import HomePage from './pages/homepage/homepage.component';
 import { Route, Switch } from "react-router-dom";
 import { BrowserRouter } from 'react-router-dom/cjs/react-router-dom.min';
+import ShopPage from './pages/shop/shop.component';
  
 const Hats = () => (
   <div>
@@ -21,8 +22,7 @@ function App() {
     <div>
       <BrowserRouter>
      <Route exact path='/' component={HomePage} />
-     <Route exact path='/shop/hats' component={Hats} />
-     <Route path='/shop/jackets' component={Jackets} />
+     <Route exact path='/shop' component={ShopPage} />
      </BrowserRouter>
     </div>
   );
