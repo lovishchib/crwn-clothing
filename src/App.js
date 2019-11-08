@@ -6,24 +6,38 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import ShopPage from './pages/shop/shop.component';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
+import { auth } from './firebase/firebase.util';
  
-const Hats = () => (
-  <div>
-      <h1>HATS PAGE</h1>
-  </div>
-);
 
-const Jackets = () => (
-  <div>
-      <h1>JACKETS PAGE</h1>
-  </div>
-);
+class App extends React.Component {
+ constructor(props) {
+   super(props);
 
-function App() {
+   this.state = {
+     currentUser: null
+   }
+ }
+
+ unsubscribeFromAuth = null;
+
+ componentDidMount() { 
+   this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {  //it returns a method, calling which closes the subscription
+     this.setState({ currentUser: user });
+
+     console.log(user);
+   })
+ }
+
+ componentWillUnmount() {
+   this.unsubscribeFromAuth(); 
+ }
+ 
+ 
+  render() {
   return (
     <Router>
     <div>
-      <Header/>
+      <Header currentUser= { this.state.currentUser} />
       <Switch>
      <Route exact path='/' component={HomePage} />
      <Route exact path='/shop' component={ShopPage} />
@@ -32,6 +46,7 @@ function App() {
     </div>
     </Router>
   );
+}
 }
 
 export default App;
