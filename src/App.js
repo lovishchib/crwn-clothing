@@ -6,7 +6,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import ShopPage from './pages/shop/shop.component';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
-import { auth } from './firebase/firebase.util';
+import { auth, createUserProfileDocument } from './firebase/firebase.util';
  
 
 class App extends React.Component {
@@ -21,11 +21,24 @@ class App extends React.Component {
  unsubscribeFromAuth = null;
 
  componentDidMount() { 
-   this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {  //it returns a method, calling which closes the subscription
-     this.setState({ currentUser: user });
+   this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {  //it returns a method, calling which closes the subscription
+     if(userAuth) {
+       const userRef = await createUserProfileDocument(userAuth);
+       
+       userRef.onSnapshot(snapShot => {
+         this.setState({
+           currentUser: {
+             id: snapShot.id,
+             ...snapShot.data()
+           }
+         })
+       });
+     }
+     else
+     this.setState({currentUser: userAuth});
+   });
 
-     console.log(user);
-   })
+   console.log(this.state.currentUser);
  }
 
  componentWillUnmount() {
